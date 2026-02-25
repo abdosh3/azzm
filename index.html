@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة البصات | مركز عزم للتأهيل</title>
+    <!-- Font Awesome 6 (مجاني) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fb;
+            color: #2c3e50;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* الهيدر */
+        header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .logo span {
+            color: #3498db;
+            font-weight: 300;
+            font-size: 1rem;
+            display: block;
+        }
+
+        /* بطاقات الإحصائيات */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.total { background: #e8f0fe; color: #2c3e50; }
+        .stat-icon.available { background: #e3f7ec; color: #27ae60; }
+        .stat-icon.occupied { background: #fef3d9; color: #f39c12; }
+        .stat-icon.maintenance { background: #fde7e7; color: #e74c3c; }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .stat-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* قسم الإضافة */
+        .add-section {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 2 1 250px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 18px;
+            border: 2px solid #e0e7ef;
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: 0.2s;
+            background: #fafcfd;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #3498db;
+            outline: none;
+            background: white;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-primary {
+            background: #2c3e50;
+            color: white;
+            box-shadow: 0 5px 15px rgba(44,62,80,0.2);
+        }
+
+        .btn-primary:hover {
+            background: #1e2b37;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e8449;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* شبكة البصات */
+        .buses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .bus-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+            border: 1px solid #f0f3f7;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bus-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(44,62,80,0.1);
+            border-color: transparent;
+        }
+
+        .bus-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #3498db;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .bus-card.available::before { background: #27ae60; }
+        .bus-card.occupied::before { background: #f39c12; }
+        .bus-card.maintenance::before { background: #e74c3c; }
+
+        .bus-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .bus-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .bus-status {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .status-available { background: #e3f7ec; color: #27ae60; }
+        .status-occupied { background: #fef3d9; color: #f39c12; }
+        .status-maintenance { background: #fde7e7; color: #e74c3c; }
+
+        .bus-details {
+            margin: 20px 0;
+            color: #5d6d7e;
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bus-details i {
+            width: 22px;
+            color: #3498db;
+        }
+
+        .bus-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .bus-actions .btn {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 0.85rem;
+            justify-content: center;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 30px;
+            color: #95a5a6;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+
+        /* تذييل */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+            border-top: 1px solid #dde4ec;
+        }
+
+        /* متجاوب */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .add-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الهيدر -->
+        <header>
+            <div class="logo">
+                <h1>نظام إدارة البصات <i class="fas fa-bus" style="color: #3498db; margin-right: 8px;"></i></h1>
+                <span>مركز عزم للتأهيل</span>
+            </div>
+            <div class="header-date" id="currentDate"></div>
+        </header>
+
+        <!-- بطاقات الإحصائيات -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon total"><i class="fas fa-bus"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalBuses">0</h3>
+                    <p>إجمالي البصات</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon available"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info">
+                    <h3 id="availableBuses">0</h3>
+                    <p>متاح</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon occupied"><i class="fas fa-clock"></i></div>
+                <div class="stat-info">
+                    <h3 id="occupiedBuses">0</h3>
+                    <p>مشغول</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon maintenance"><i class="fas fa-tools"></i></div>
+                <div class="stat-info">
+                    <h3 id="maintenanceBuses">0</h3>
+                    <p>تحت الصيانة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- نموذج إضافة بص جديد -->
+        <div class="add-section">
+            <div class="form-group">
+                <label><i class="fas fa-bus" style="margin-left: 5px;"></i> اسم أو رقم البص</label>
+                <input type="text" id="busNameInput" placeholder="مثال: بص 101 أو بص المطار" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> الحالة</label>
+                <select id="busStatusSelect">
+                    <option value="available">🟢 متاح</option>
+                    <option value="occupied">🟠 مشغول</option>
+                    <option value="maintenance">🔴 تحت الصيانة</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="addBusBtn"><i class="fas fa-plus-circle"></i> إضافة بص</button>
+        </div>
+
+        <!-- عنوان وعرض البصات -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="font-weight: 600;"><i class="fas fa-list"></i> قائمة البصات</h2>
+            <span id="busesCount" style="background: #e0e7ef; padding: 5px 15px; border-radius: 30px; font-size: 0.9rem;">0 بص</span>
+        </div>
+
+        <!-- شبكة البطاقات -->
+        <div class="buses-grid" id="busesGrid">
+            <!-- سيتم إنشاء البطاقات ديناميكياً بواسطة JavaScript -->
+            <div class="empty-message">
+                <i class="fas fa-bus" style="font-size: 3rem; opacity: 0.5; margin-bottom: 15px; display: block;"></i>
+                لا توجد بصات مضافة بعد. أضف بصاً جديداً من الأعلى.
+            </div>
+        </div>
+
+        <!-- تذييل -->
+        <footer>
+            <p>جميع الحقوق محفوظة &copy; 2026 - مركز عزم للتأهيل | الإصدار 1.0</p>
+        </footer>
+    </div>
+
+    <script>
+        // بيانات البصات (محاكاة لقاعدة بيانات)
+        let buses = [
+            { id: 1, name: 'بص 101', status: 'available', driver: 'يوسف سيف الدين', plate: 'أ ب ج 123' },
+            { id: 2, name: 'بص 202', status: 'occupied', driver: 'محمود حسن', plate: 'د هـ و 456' },
+            { id: 3, name: 'بص 303', status: 'maintenance', driver: 'سامي عبدالله', plate: 'ز ح ط 789' }
+        ];
+
+        // عناصر DOM
+        const busesGrid = document.getElementById('busesGrid');
+        const totalBusesSpan = document.getElementById('totalBuses');
+        const availableBusesSpan = document.getElementById('availableBuses');
+        const occupiedBusesSpan = document.getElementById('occupiedBuses');
+        const maintenanceBusesSpan = document.getElementById('maintenanceBuses');
+        const busesCountSpan = document.getElementById('busesCount');
+        const busNameInput = document.getElementById('busNameInput');
+        const busStatusSelect = document.getElementById('busStatusSelect');
+        const addBtn = document.getElementById('addBusBtn');
+
+        // عرض التاريخ الحالي في الهيدر
+        function updateDate() {
+            const dateElem = document.getElementById('currentDate');
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dateElem.innerHTML = `<i class="far fa-calendar-alt"></i> ${now.toLocaleDateString('ar-EG', options)}`;
+        }
+        updateDate();
+
+        // دالة لتحديث الإحصائيات
+        function updateStats() {
+            const total = buses.length;
+            const available = buses.filter(b => b.status === 'available').length;
+            const occupied = buses.filter(b => b.status === 'occupied').length;
+            const maintenance = buses.filter(b => b.status === 'maintenance').length;
+
+            totalBusesSpan.textContent = total;
+            availableBusesSpan.textContent = available;
+            occupiedBusesSpan.textContent = occupied;
+            maintenanceBusesSpan.textContent = maintenance;
+            busesCountSpan.textContent = `${total} بص`;
+        }
+
+        // دالة لإنشاء بطاقة بص
+        function createBusCard(bus) {
+            const card = document.createElement('div');
+            card.className = `bus-card ${bus.status}`;
+            card.dataset.id = bus.id;
+
+            // تحديد نص الحالة والأيقونة
+            let statusText = '', statusClass = '';
+            switch (bus.status) {
+                case 'available':
+                    statusText = '🟢 متاح';
+                    statusClass = 'status-available';
+                    break;
+                case 'occupied':
+                    statusText = '🟠 مشغول';
+                    statusClass = 'status-occupied';
+                    break;
+                case 'maintenance':
+                    statusText = '🔴 تحت الصيانة';
+                    statusClass = 'status-maintenance';
+                    break;
+            }
+
+            // محتوى البطاقة
+            card.innerHTML = `
+                <div class="bus-header">
+                    <span class="bus-name">${bus.name}</span>
+                    <span class="bus-status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="bus-details">
+                    <div><i class="fas fa-id-card"></i> رقم البص: ${bus.id}</div>
+                    <div><i class="fas fa-user"></i> السائق: ${bus.driver || 'غير معين'}</div>
+                    <div><i class="fas fa-car-side"></i> اللوحة: ${bus.plate || 'بدون لوحة'}</div>
+                </div>
+                <div class="bus-actions">
+                    <button class="btn btn-success change-status" data-id="${bus.id}" data-status="available"><i class="fas fa-check"></i> متاح</button>
+                    <button class="btn btn-warning change-status" data-id="${bus.id}" data-status="occupied"><i class="fas fa-clock"></i> مشغول</button>
+                    <button class="btn btn-danger change-status" data-id="${bus.id}" data-status="maintenance"><i class="fas fa-tools"></i> صيانة</button>
+                    <button class="btn delete-bus" data-id="${bus.id}" style="background:#ecf0f1; color:#2c3e50;"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+            return card;
+        }
+
+        // دالة عرض البصات
+        function renderBuses() {
+            busesGrid.innerHTML = ''; // تفريغ الشبكة
+
+            if (buses.length === 0) {
+                // عرض رسالة فارغة
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-message';
+                emptyDiv.innerHTML = '<i class="fas fa-bus" style="font-size: 3rem; opacity: 0.5; margin-bottom: 15px; display: block;"></i> لا توجد بصات مضافة بعد. أضف بصاً جديداً من الأعلى.';
+                busesGrid.appendChild(emptyDiv);
+            } else {
+                buses.forEach(bus => {
+                    busesGrid.appendChild(createBusCard(bus));
+                });
+            }
+
+            updateStats();
+            attachBusActions(); // إعادة ربط الأحداث بعد إعادة الرسم
+        }
+
+        // ربط أزرار تغيير الحالة والحذف
+        function attachBusActions() {
+            // تغيير الحالة
+            document.querySelectorAll('.change-status').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const busId = parseInt(this.dataset.id);
+                    const newStatus = this.dataset.status;
+                    const bus = buses.find(b => b.id === busId);
+                    if (bus) {
+                        bus.status = newStatus;
+                        renderBuses();
+                    }
+                });
+            });
+
+            // حذف بص
+            document.querySelectorAll('.delete-bus').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const busId = parseInt(this.dataset.id);
+                    buses = buses.filter(b => b.id !== busId);
+                    renderBuses();
+                });
+            });
+        }
+
+        // إضافة بص جديد
+        addBtn.addEventListener('click', function() {
+            const name = busNameInput.value.trim();
+            if (name === '') {
+                alert('الرجاء إدخال اسم أو رقم البص');
+                return;
+            }
+
+            // إنشاء id جديد
+            const newId = buses.length > 0 ? Math.max(...buses.map(b => b.id)) + 1 : 1;
+            const newBus = {
+                id: newId,
+                name: name,
+                status: busStatusSelect.value,
+                driver: 'غير معين', // يمكن إضافته لاحقاً
+                plate: 'بدون لوحة'
+            };
+            buses.push(newBus);
+            busNameInput.value = ''; // تفريغ الحقل
+            renderBuses();
+        });
+
+        // تهيئة العرض
+        renderBuses();
+
+        // يمكن إضافة ميزة البحث أو التصفية حسب الطلب
+    </script>
+</body>
+</html>
